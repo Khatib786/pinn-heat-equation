@@ -1,0 +1,148 @@
+
+PINN vs. FD BASELINE EXPERIMENT
+2D Transient Heat Equation
+============================================================
+  alpha=0.01, T=0.5, Gaussian IC (A=1.0, x0=0.5, y0=0.5, sigma=0.1)
+  FD grid: 64×64, Δt=5.67e-03
+  PINN: [64, 64, 64, 64] (tanh), seed=42
+
+============================================================
+PHASE 1+2: FD SOLVER VALIDATION
+============================================================
+
+[FD Validation] Convergence test (Fourier-mode IC):
+[FD] Stability check: r_x = 0.22500, r_y = 0.22500, r_x + r_y = 0.45000 (limit = 0.5)
+[FD] Stability condition satisfied (safety factor applied).
+  nx= 32: L2_rel=1.41e-04  RMSE=6.21e-05  MaxAE=1.28e-04
+[FD] Stability check: r_x = 0.22500, r_y = 0.22500, r_x + r_y = 0.45000 (limit = 0.5)
+[FD] Stability condition satisfied (safety factor applied).
+  nx= 64: L2_rel=3.47e-05  RMSE=1.55e-05  MaxAE=3.14e-05
+[FD] Stability check: r_x = 0.22500, r_y = 0.22500, r_x + r_y = 0.45000 (limit = 0.5)
+[FD] Stability condition satisfied (safety factor applied).
+  nx= 96: L2_rel=1.53e-05  RMSE=6.84e-06  MaxAE=1.38e-05
+[vis] Saved /home/claude/pde_repo/figures/fd_convergence.png
+
+[FD Validation] Baseline grid: Nx=64, Δx=0.01587, Δt=5.66893e-03, r=0.2250 (limit=0.25)
+
+[FD Validation] Baseline grid analytical error:
+[FD] Stability check: r_x = 0.22500, r_y = 0.22500, r_x + r_y = 0.45000 (limit = 0.5)
+[FD] Stability condition satisfied (safety factor applied).
+  nx=64: L2_rel=3.47e-05  RMSE=1.55e-05  MaxAE=3.14e-05
+
+============================================================
+PHASE 3: FD REFERENCE SOLUTION (Gaussian IC)
+============================================================
+[FD] Stability check: r_x = 0.22500, r_y = 0.22500, r_x + r_y = 0.45000 (limit = 0.5)
+[FD] Stability condition satisfied (safety factor applied).
+[vis] Saved /home/claude/pde_repo/figures/fd_ic.png
+
+[FD Reference] Solving with Nx=64, Δt=5.67e-03, save_times=[0.0, 0.1, 0.2, 0.3, 0.5] ...
+[FD] Solve complete: 89 steps, final t = 0.500000, wall time = 0.0041 s
+[FD Reference] Solve time: 0.0041 s
+[vis] Saved /home/claude/pde_repo/figures/fd_energy_decay.png
+[vis] Saved /home/claude/pde_repo/figures/fd_snapshot_t0.00.png
+[vis] Saved /home/claude/pde_repo/figures/fd_snapshot_t0.10.png
+[vis] Saved /home/claude/pde_repo/figures/fd_snapshot_t0.20.png
+[vis] Saved /home/claude/pde_repo/figures/fd_snapshot_t0.30.png
+[vis] Saved /home/claude/pde_repo/figures/fd_snapshot_t0.50.png
+[FD Reference] Snapshots saved to results/fd_reference.npz
+
+============================================================
+PHASE 4-7: PINN IMPLEMENTATION + TRAINING
+============================================================
+[PINN] Architecture: 3 → [64, 64, 64, 64] → 1  (12,801 trainable parameters)
+
+[PINN] Sampling collocation points...
+  Interior PDE points : 5000
+  IC points           : 1000
+  BC points           : 1000 (4 × 250)
+
+[Trainer] Starting training: 20000 epochs, Adam lr 0.001 → 1e-05 (cosine)
+
+   Epoch         Total           PDE            IC            BC          LR
+------------------------------------------------------------------------
+       1    1.9652e+00    2.1579e-03    9.0916e-02    1.0539e-01    1.00e-03  [0s]
+     500    1.5191e-01    3.7425e-03    1.4197e-02    6.1946e-04    9.98e-04  [42s]
+    1000    1.2556e-02    4.8833e-03    6.9549e-04    7.1791e-05    9.94e-04  [85s]
+    1500    3.7637e-03    1.9059e-03    1.6315e-04    2.2626e-05    9.86e-04  [125s]
+    2000    1.8167e-03    9.7553e-04    7.4067e-05    1.0048e-05    9.76e-04  [167s]
+    2500    1.1218e-03    6.1910e-04    4.3089e-05    7.1794e-06    9.62e-04  [209s]
+    3000    8.4406e-04    4.5102e-04    3.1942e-05    7.3614e-06    9.46e-04  [253s]
+    3500    5.9734e-04    3.4200e-04    2.1500e-05    4.0342e-06    9.27e-04  [297s]
+    4000    1.5087e-02    6.5312e-04    6.5651e-04    7.8685e-04    9.05e-04  [340s]
+    4500    3.8855e-04    2.1256e-04    1.4758e-05    2.8410e-06    8.81e-04  [382s]
+    5000    3.0677e-04    1.7457e-04    1.1221e-05    1.9981e-06    8.55e-04  [423s]
+    5500    7.8242e-04    1.6694e-04    3.0436e-05    3.1112e-05    8.26e-04  [466s]
+    6000    2.3262e-04    1.3107e-04    8.7132e-06    1.4410e-06    7.96e-04  [508s]
+    6500    3.6150e-03    4.8935e-04    1.4985e-04    1.6271e-04    7.64e-04  [550s]
+    7000    1.8067e-04    1.0478e-04    6.5384e-06    1.0506e-06    7.30e-04  [592s]
+    7500    1.7602e-04    9.6826e-05    6.5984e-06    1.3211e-06    6.94e-04  [634s]
+    8000    1.4890e-04    8.6572e-05    5.3840e-06    8.4907e-07    6.58e-04  [677s]
+    8500    1.3871e-04    7.9167e-05    5.0167e-06    9.3768e-07    6.21e-04  [719s]
+    9000    1.2489e-04    7.2576e-05    4.4743e-06    7.5706e-07    5.82e-04  [762s]
+    9500    1.2197e-04    6.6543e-05    4.3155e-06    1.2269e-06    5.44e-04  [806s]
+   10000    1.0291e-04    6.1086e-05    3.6028e-06    5.7997e-07    5.05e-04  [849s]
+   10500    9.4848e-05    5.6351e-05    3.3232e-06    5.2649e-07    4.66e-04  [892s]
+   11000    8.7352e-05    5.2077e-05    3.0380e-06    4.8951e-07    4.28e-04  [933s]
+   11500    2.0611e-04    5.0438e-05    8.3721e-06    7.1949e-06    3.89e-04  [975s]
+   12000    8.6934e-05    4.5059e-05    3.1052e-06    1.0823e-06    3.52e-04  [1017s]
+   12500    6.9976e-05    4.1851e-05    2.4196e-06    3.9283e-07    3.16e-04  [1058s]
+   13000    6.5301e-05    3.9104e-05    2.2539e-06    3.6579e-07    2.80e-04  [1099s]
+   13500    2.9194e-04    4.2627e-05    1.3102e-05    1.1829e-05    2.46e-04  [1140s]
+   14000    5.7417e-05    3.4408e-05    1.9816e-06    3.1931e-07    2.14e-04  [1181s]
+   14500    5.4567e-05    3.2429e-05    1.8787e-06    3.3506e-07    1.84e-04  [1221s]
+   15000    5.1049e-05    3.0572e-05    1.7679e-06    2.7992e-07    1.55e-04  [1261s]
+   15500    4.8274e-05    2.8916e-05    1.6714e-06    2.6444e-07    1.29e-04  [1302s]
+   16000    5.1112e-05    2.7583e-05    1.8374e-06    5.1553e-07    1.05e-04  [1344s]
+   16500    4.3534e-05    2.6048e-05    1.5134e-06    2.3520e-07    8.29e-05  [1387s]
+   17000    4.1479e-05    2.4800e-05    1.4451e-06    2.2276e-07    6.40e-05  [1429s]
+   17500    3.9644e-05    2.3685e-05    1.3842e-06    2.1176e-07    4.77e-05  [1471s]
+   18000    3.8054e-05    2.2717e-05    1.3314e-06    2.0230e-07    3.42e-05  [1512s]
+   18500    3.6718e-05    2.1903e-05    1.2870e-06    1.9448e-07    2.37e-05  [1554s]
+   19000    3.5618e-05    2.1233e-05    1.2504e-06    1.8810e-07    1.61e-05  [1596s]
+   19500    3.4696e-05    2.0671e-05    1.2197e-06    1.8281e-07    1.15e-05  [1639s]
+   20000    3.3823e-05    2.0138e-05    1.1906e-06    1.7784e-07    1.00e-05  [1682s]
+
+[Trainer] Training complete. Total wall time: 1681.88 s (28.0 min)
+[Trainer] Loss history saved to /home/claude/pde_repo/checkpoints/loss_history.json
+[vis] Saved /home/claude/pde_repo/figures/loss_curve.png
+
+[PINN] Training wall time: 1681.88 s (28.03 min)
+
+============================================================
+PHASE 8: QUANTITATIVE EVALUATION (PINN vs. FD)
+============================================================
+
+[Eval] Error metrics at each evaluation time:
+  t=0.00: L2_rel=6.6783e-03  RMSE=1.1652e-03  MaxAE=4.1493e-03  PDE_resid_rms=1.5577e-02
+  t=0.10: L2_rel=5.3790e-03  RMSE=8.5513e-04  MaxAE=4.7994e-03  PDE_resid_rms=5.3466e-03
+  t=0.20: L2_rel=5.8819e-03  RMSE=8.6460e-04  MaxAE=4.2718e-03  PDE_resid_rms=4.1884e-03
+  t=0.30: L2_rel=3.9146e-03  RMSE=5.3965e-04  MaxAE=1.9152e-03  PDE_resid_rms=3.6565e-03
+  t=0.50: L2_rel=3.8524e-03  RMSE=4.7513e-04  MaxAE=1.4115e-03  PDE_resid_rms=4.5493e-03
+
+[Eval] IC error (t=0):
+  IC L2_rel=6.6783e-03  RMSE=1.1652e-03  MaxAE=4.1493e-03
+
+[Eval] BC error (all walls, all eval times):
+  Max|û_BC|=2.0168e-03  Mean|û_BC|=3.9128e-04  RMS|û_BC|=5.2013e-04
+
+[Eval] PINN inference timing:
+  n_points=4096: mean=1.580 ms, min=1.492 ms
+
+============================================================
+VISUALIZATION
+============================================================
+[vis] Saved /home/claude/pde_repo/figures/comparison_all_times.png
+[vis] Saved /home/claude/pde_repo/figures/cross_sections.png
+[vis] Saved /home/claude/pde_repo/figures/error_vs_time.png
+[vis] Saved /home/claude/pde_repo/figures/error_map_t0.10.png
+[vis] Saved /home/claude/pde_repo/figures/error_map_t0.20.png
+[vis] Saved /home/claude/pde_repo/figures/error_map_t0.30.png
+[vis] Saved /home/claude/pde_repo/figures/error_map_t0.50.png
+[Vis] All figures saved to figures/
+
+[Summary] Results saved to /home/claude/pde_repo/results/baseline_results.json
+
+============================================================
+Baseline experiment complete. Total wall time: 1688.1 s (28.1 min)
+============================================================

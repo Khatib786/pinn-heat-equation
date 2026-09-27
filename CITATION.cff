@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below."
+title: "A Physics-Informed Neural Network for the 2D Transient Heat Equation: Accuracy, Amortized Cost, and Sensitivity Analysis Against an Independent Finite-Difference Baseline"
+type: software
+authors:
+  - family-names: Khatib
+    given-names: "" Khatib Kabir
+date-released: 2025-08-08
+license: MIT
+repository-code: "" # add your GitHub URL here after pushing
+references:
+  - type: article
+    title: "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations"
+    authors:
+      - family-names: Raissi
+        given-names: M.
+      - family-names: Perdikaris
+        given-names: P.
+      - family-names: Karniadakis
+        given-names: G. E.
+    journal: "Journal of Computational Physics"
+    year: 2019
